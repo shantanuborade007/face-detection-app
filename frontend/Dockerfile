@@ -1,24 +1,17 @@
-FROM node:18-alpine
+FROM node:18
 
+# Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Install dependencies early to leverage Docker cache
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
 
-# Copy project files
+# Copy source code
 COPY . .
 
-# Build for production
-RUN npm run build
-
-# Install serve to run the application
-RUN npm install -g serve
-
-# Expose port
+# Expose Vite dev server port
 EXPOSE 3000
 
-# Run the application
-CMD ["serve", "-s", "build", "-l", "3000"]
+# Start Vite dev server
+CMD ["npm", "run", "dev", "--", "--host"]
